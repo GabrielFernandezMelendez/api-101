@@ -1,0 +1,67 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>PokeAPI 101</title>
+</head>
+
+<body>
+    <h1>PokeAPI 101 (inspecionar para ver los resultados del ejercicio)</h1>
+
+    <script>
+        /*funcion asincronas a la cual se le hace una peticion al servidor con fetch 
+        se le envia como parametro el nombre de un  poquemon y saca alguno de los datos 
+        que tiene la api sobre el pokemon indicado
+        
+        */
+        async function getPokemon(name) {
+            const url = `https://pokeapi.co/api/v2/pokemon/${name}`;
+            const response = await fetch(url);
+            const data = await response.json();
+
+            console.log("Nombre:", data.name);
+            console.log("Altura:", data.height);
+            console.log("Peso:", data.weight);
+            console.log("Habilidades:", data.abilities.map(a => a.ability.name));
+        }
+
+        /*
+        esta saca  una lista de pokemones y   muestra su nombre y la url donde estan sus datos
+      */
+        async function listPokemons() {
+            const response = await fetch("https://pokeapi.co/api/v2/pokemon");
+            const data = await response.json();
+
+            console.log("Lista de Pokémon:");
+            data.results.forEach(pokemon => {
+                console.log("-", pokemon.name, "|", pokemon.url);
+            });
+        }
+
+        /*
+        en este caso  lo que hacemos es darle el numero de respuestas que queremos 
+        recibir y apartir de donde debe buscarlas ,una vez tenemos respuesta lo 
+        mostramos por pantalla
+      */
+        async function listPokemonsConParametros(limit, offset) {
+            const url = `https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`;
+            const response = await fetch(url);
+            const data = await response.json();
+
+            console.log(`Pokémon del ${offset + 1} al ${offset + limit}:`);
+            data.results.forEach((p, i) => {
+                console.log(`[${offset + i + 1}]`, p.name);
+            });
+        }
+
+        // ── EJECUTAR ─────────────────────────────────
+        getPokemon("charizard");
+        listPokemons();
+        listPokemonsConParametros(5, 0);
+        listPokemonsConParametros(10, 20);
+    </script>
+</body>
+
+</html>
